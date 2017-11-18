@@ -1,0 +1,28 @@
+AC_PREREQ([2.69])
+AC_INIT([mysdl], [0.0.0])
+#AC_CONFIG_HEADERS([config.h])
+
+AC_CONFIG_SRCDIR([mysdl.cc])
+AM_INIT_AUTOMAKE([foreign])
+AC_CONFIG_MACRO_DIRS([m4])
+#AC_PREREQ([0.29])
+
+#PKG_PROG_PKG_CONFIG 
+#PKG_CONFIG_LIBDIR
+
+
+#AX_ASAN
+#AX_DEBUG
+#AX_GPROF
+#AX_WITH_CURSES
+
+AC_SUBST(SDL2_CFLAGS, `pkg-config --cflags sdl2`)
+AC_SUBST(SDL2_LIBS, `pkg-config --libs sdl2`)
+
+
+AC_PROG_CXX
+#AC_PROG_YACC
+
+AC_CONFIG_FILES([Makefile]) 
+AC_OUTPUT
+
