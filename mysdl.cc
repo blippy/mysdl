@@ -6,10 +6,28 @@
 #include <SDL_mixer.h>
 #include <thread>
 #include <chrono>
+#include <sys/stat.h>
 using namespace std::chrono_literals;
 
 using std::cout;
 using std::endl;
+
+bool exists(std::string filename)
+{
+	bool found = false;
+	struct stat sb;
+	/*
+	if (stat(filename.c_str(), &sb) == -1) {
+		perror("stat");
+		exit(EXIT_FAILURE);
+	}
+
+	exists = (sb.st_mode & S_IFMT) == S_IFREG;
+	*/
+	found = stat(filename.c_str(), &sb) != -1;
+	return found;
+
+}
 
 void play_beep(Mix_Music* music, int times = 1)
 {
@@ -64,9 +82,14 @@ main()
 
 	clock_t begin = std::clock();
 
-	Mix_Music *beep;
-	//beep = Mix_LoadMUS("beep-07.wav");
-	beep = Mix_LoadMUS("pluck.wav");
+	std::string pluck_wav = "pluck.wav";
+	//cout << "Datadir:" << SHAREDIR << "\n";
+	if(! exists(pluck_wav)) {
+			pluck_wav = std::string(SHAREDIR) + "/pluck.wav";
+	}
+	cout << "Wav:" << pluck_wav << "\n";
+
+	Mix_Music* beep = Mix_LoadMUS(pluck_wav.c_str());
 	if(!beep) {
 		printf("Mix_LoadMUS:beep-07.wav:%s\n", Mix_GetError());
 		return 1;
