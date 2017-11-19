@@ -33,8 +33,13 @@ void beeper(Mix_Music *music)
 int
 main()
 {
-	SDL_Window *w;
-	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) {
+	constexpr bool use_video = false;
+
+	auto init_flags = SDL_INIT_AUDIO;
+	if(use_video) init_flags |= SDL_INIT_VIDEO;
+
+	SDL_Window *w = nullptr;
+	if(SDL_Init(init_flags) == -1) {
 		printf("SDL_Init: %s\n", SDL_GetError());
 		return 1;
 	}
@@ -45,17 +50,17 @@ main()
 	}
 
 
-	//constexpr auto winflags = SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS;
-	//constexpr auto winflags = SDL_WINDOW_BORDERLESS;
-	constexpr auto winflags = 0;
-	w = SDL_CreateWindow("mySDL", SDL_WINDOWPOS_UNDEFINED, 
-			SDL_WINDOWPOS_UNDEFINED, 640, 480, winflags);
-	if(w == nullptr) {
-		printf("Could not create window: %s\n", SDL_GetError());
-		return 1;
+	if(use_video) {
+		constexpr auto winflags = 0;
+		w = SDL_CreateWindow("mySDL", SDL_WINDOWPOS_UNDEFINED, 
+				SDL_WINDOWPOS_UNDEFINED, 640, 480, winflags);
+		if(w == nullptr) {
+			printf("Could not create window: %s\n", SDL_GetError());
+			return 1;
+		}
 	}
 
-	puts("Type 'q' to quit");
+	//puts("Type 'q' to quit");
 
 	clock_t begin = std::clock();
 
@@ -74,25 +79,27 @@ main()
 	while(!quit) {
 		clock_t now = clock();
 		constexpr auto mins = 30;
+		//constexpr auto mins = 0.25;
 		double elapsed_mins = double(now-begin) / CLOCKS_PER_SEC / 60;
 		if(elapsed_mins>mins) quit = true;
 
-		while(SDL_PollEvent(&event)) {
-			switch(event.type) {			
-				case SDL_KEYDOWN: 
-					{
-						auto k = event.key.keysym.scancode;
-						//cout << k << endl;
-						if(k == SDL_SCANCODE_Q) quit = true;
-					}
-					break;
-				default:
-					break;
+		if(use_video) {
+			while(SDL_PollEvent(&event)) {
+				switch(event.type) {			
+					case SDL_KEYDOWN: 
+						{
+							auto k = event.key.keysym.scancode;
+							//cout << k << endl;
+							if(k == SDL_SCANCODE_Q) quit = true;
+						}
+						break;
+					default:
+						break;
+				}
 			}
 		}
 	}
 
-	//SDL_Delay(3000);
 	keep_beeping = false;
 	t1.join();
 	play_beep(beep, 10);
@@ -100,7 +107,7 @@ main()
 
 	Mix_FreeMusic(beep);
 	Mix_CloseAudio();
-	SDL_DestroyWindow(w);
+	if(use_video) SDL_DestroyWindow(w);
 	SDL_Quit();
 
 	return 0;
