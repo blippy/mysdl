@@ -1,0 +1,2 @@
+Prerequisites 14.2:
+sudo sbopkg -i SDL2 SDL2_mixer

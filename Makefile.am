@@ -1,4 +1,4 @@
-AM_CXXFLAGS = @SDL2_CFLAGS@
+AM_CXXFLAGS = -std=c++14 @SDL2_CFLAGS@
 
 bin_PROGRAMS = mysdl
 
