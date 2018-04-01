@@ -16,9 +16,10 @@ AC_CONFIG_MACRO_DIRS([m4])
 #AX_GPROF
 #AX_WITH_CURSES
 
-AC_SUBST(SDL2_CFLAGS, `pkg-config --cflags sdl2`)
-AC_SUBST(SDL2_LIBS, `pkg-config --libs sdl2`)
+#AC_SUBST(SDL2_CFLAGS, `pkg-config --cflags sdl2`)
+#AC_SUBST(SDL2_LIBS, `pkg-config --libs sdl2`)
 
+PKG_CHECK_MODULES([SDL2], [sdl2])
 
 AC_PROG_CXX
 #AC_PROG_YACC
