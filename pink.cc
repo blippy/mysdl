@@ -1,10 +1,10 @@
 #include <iostream>
-#include <signal.h>
 #include <sys/stat.h>
 
 #include <SDL.h>
 #include <SDL_mixer.h>
 
+#include <signal.h>
 
 bool exists(std::string filename)
 {
@@ -27,11 +27,16 @@ int main(int argc, char* argv[])
 	SDL_Init(SDL_INIT_EVERYTHING);
 
 	std::cout << "Type Ctl-C to quit\n";
+	signal(SIGABRT, &quit);
+	signal(SIGTERM, &quit);
+	signal(SIGINT, &quit);
+	/*
 	struct sigaction hnd;
 	hnd.sa_handler = quit;
 	sigemptyset(&hnd.sa_mask);
 	hnd.sa_flags = 0;
 	sigaction(SIGINT, &hnd, NULL);
+	*/
 
 	int    audioRate = 22050;
 	Uint16 audioFormat = AUDIO_S16SYS;
@@ -54,7 +59,7 @@ int main(int argc, char* argv[])
 	// Load a sound.
 	std::string wav_file = "pink.wav";
 	if(!exists(wav_file))  {
-		wav_file = std::string(SHAREDIR) + wav_file;
+		wav_file = std::string(SHAREDIR) + "/" + wav_file;
 	}
 	//Mix_Chunk *sound = NULL;
 	//sound = Mix_LoadWAV( "c:\\users\\public\\sound.wav" );
